@@ -27,5 +27,8 @@
     "underscore": "^1.13.2",
     "validator": "^13.7.0",
     "yamljs": "^0.3.0"
+  },
+  "engines": {
+    "node": "12.5.0"
   }
 }
