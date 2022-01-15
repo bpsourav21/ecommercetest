@@ -30,8 +30,6 @@ app.use(passport.initialize());
 // Instead of using body-parser middleware, use the new Express implementation of the same thing
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-
-// Allows our Angular application to make HTTP requests to Express application
 app.use(cors());
 
 /**
