@@ -1,0 +1,266 @@
+openapi: 3.0.0
+info:
+  title: Ecommerece Test
+  description: Node.js + MongoDB + Passport + JWT
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:4000
+    description: Local development server
+
+paths:
+  /registration:
+    post:
+      summary: Register a new user account
+      description: Register a new Customer and create a JWT token for setting up password
+      tags: 
+        - Auth
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Admin"
+                email:
+                  type: string
+                  example: "admin@test.com"
+                phone:
+                  type: string
+                  example: "+8801671820025"
+                occupation:
+                  type: string
+                  example: "Engineer"
+              required:
+                - name
+                - email
+                - phone
+                - occupation
+      responses:
+        "200":
+          description: The registration request was successful
+  /set-password:
+    post:
+      summary: Sets user password. Need to add the token in the header
+      tags: 
+        - Auth
+      operationId: setpassword
+      parameters:
+      - name: X-Access-Token
+        in: header
+        description: Access token to set password
+        required: true
+        type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                confirm-password:
+                  type: string
+      responses:
+        "200":
+          description: Password changed successfully
+  /login:
+    post:
+      summary: Authenticate account credentials and return a JWT token and a cookie with a refresh token
+      description: Accounts must be verified before authenticating.
+      tags: 
+        - Auth
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "admin@test.com"
+                password:
+                  type: string
+                  example: "pass123"
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Account details, a JWT access token and a refresh token cookie
+        "400":
+          description: The email or password is incorrect
+  /logout:
+    post:
+      summary: Logout and delete cookies.
+      tags: 
+        - Auth
+      operationId: logout
+      responses:
+        "200":
+          description: Successfully log out from device
+  /product:
+    post:
+      summary: For adding new product
+      tags: 
+        - Product
+      operationId: addProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Name:
+                  type: string
+                Price:
+                  type: number
+                Details:
+                  type: string
+                Quantity:
+                  type: number
+                Sizes:
+                  type: array
+                  items: 
+                    type: string
+                    enum: [ "s", "m", "xl", "xx"]
+                Product_images:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Product added successfully
+  /product/{id}:
+    patch:
+      summary: For editing product
+      tags: 
+        - Product
+      operationId: updateProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Name:
+                  type: string
+                Price:
+                  type: number
+                Details:
+                  type: string
+                Quantity:
+                  type: number
+                Sizes:
+                  type: array
+                  items: 
+                    type: string
+                    enum: [ "s", "m", "xl", "xx"]
+                Product_images:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        "200":
+          description: Product updated successfully
+    delete:
+      summary: For deleting product
+      tags: 
+        - Product
+      operationId: deleteProduct
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Deleting product succes
+  /products:
+    post:
+      summary: A list of products in a paginated and sorted way
+      tags: 
+        - Product
+      operationId: allProduct
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: number
+                total:
+                  type: number
+                  default: 10
+                sortBy:
+                  type: string
+                  default: "Name"
+                sortType: 
+                  type: string
+                  enum: [ "asc", "desc"]
+      responses:
+        "200":
+          description: Product showing successfully
+  /products/{productid}:
+    get:
+      summary: For getting product details
+      tags: 
+        - Product
+      operationId: oneProduct
+      parameters:
+        - name: productid
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Showing product details
+  /order:
+    post:
+      summary: Place a new order
+      tags: 
+        - Order
+      operationId: placeorder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ProductList:
+                  type: array
+                  items:
+                    schema:
+                    type: object
+                    properties:
+                      ProductId:
+                        type: string
+                      Quantity:
+                        type: number
+                      TotalPrice:
+                        type: number
+                      Size:
+                        type: string
+                Name:
+                  type: string
+                Email:
+                  type: string
+                Phone: 
+                  type: string
+      responses:
+        "200":
+          description: Product showing successfully
